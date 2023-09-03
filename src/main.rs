@@ -1,6 +1,9 @@
 #![no_std]
 #![no_main]
 
+
+pub mod astro;
+
 use panic_halt as _;
 
 #[arduino_hal::entry]

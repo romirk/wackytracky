@@ -2,7 +2,7 @@
 name = "wackytracky"
 version = "0.1.0"
 authors = ["romir kulshrestha <romir.kulshrestha@gmail.com>"]
-edition = "2023"
+edition = "2021"
 license = "MIT"
 
 [[bin]]
