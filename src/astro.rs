@@ -1,26 +1,24 @@
 use core::f64::consts::PI;
 
 fn altitude(latitude: f64, declination: f64, hour_angle: f64) -> f64 {
-    (latitude.sin() * declination.sin()
-        + latitude.cos() * declination.cos() * hour_angle.cos().abs())
-    .asin()
+    libm::asin(
+        libm::sin(latitude.to_radians()) * libm::sin(declination)
+            + libm::cos(latitude.to_radians()) * libm::cos(declination) * libm::cos(hour_angle),
+    )
 }
 
 fn refraction(altitude: f64) -> f64 {
     let h = altitude.to_degrees();
-    let r: f64 = 1.02 / (60.0 * tan((h + 10.3 / (h + 5.11)).to_radians()));
+    let r: f64 = 1.02 / (60.0 * libm::tan((h + 10.3 / (h + 5.11)).to_radians()));
     r.to_radians()
 }
 
 fn azimuth(latitude: f64, declination: f64, hour_angle: f64, altitude: f64) -> f64 {
-    let azimuth = (hour_angle.sin() * declination.cos()) / altitude.cos();
-    let azimuth = if azimuth.abs() > 1.0 {
-        azimuth.signum()
-    } else {
-        azimuth
-    };
-    let azimuth = azimuth.asin();
-    if hour_angle.sin() > 0.0 {
+    let azimuth = libm::sin(hour_angle) * libm::cos(declination)
+        / (libm::cos(latitude.to_radians()) * libm::sin(altitude)
+            - libm::sin(latitude.to_radians()) * libm::cos(altitude) * libm::cos(hour_angle));
+    let azimuth = libm::acos(azimuth);
+    if hour_angle > 0.0 {
         azimuth
     } else {
         2.0 * PI - azimuth
